@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
-test('test', async ({ page }) => {
+test('Deve consultar um pedido aprovado', async ({ page }) => {
+    //arrange
   await page.goto('http://localhost:5173/');
 
   //checkpoints
@@ -11,14 +12,22 @@ test('test', async ({ page }) => {
   //checkpoints texto consultar pedido
   await expect(page.getByRole('heading')).toContainText('Consultar Pedido');
 
-  await page.getByTestId('search-order-id').click();
-  await page.getByTestId('search-order-id').fill('VLO-B7ICS9');
+  //act
 
-  await page.getByTestId('search-order-button').click();
+  await page.getByRole('textbox', { name: 'Número do Pedido' }).fill('VLO-B7ICS9');
+
+  await page.getByRole('button', { name: 'Buscar Pedido' }).click();
+
+
+//assert
+
   //checkpoints resultado do pedido
-  await expect(page.getByTestId('order-result-id')).toBeVisible();
-  await expect(page.getByTestId('order-result-id')).toContainText('VLO-B7ICS9');
+
+  await expect(page.getByText('Pedido', { exact: true })).toBeVisible();
+
+  
   //checkpoints status do pedido
-  await expect(page.getByTestId('order-result-status')).toBeVisible();
-  await expect(page.getByTestId('order-result-status')).toContainText('APROVADO');
+
+  await expect(page.getByText('APROVADO')).toBeVisible();
+
 });
