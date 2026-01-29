@@ -49,3 +49,45 @@ test('Deve consultar um pedido aprovado', async ({ page }) => {
   await expect(page.getByText('APROVADO')).toBeVisible();
 
 });
+
+test ('Deve validar quandonãoencontrar o pedido', async({page}) => {
+
+    const order = 'VLO-ABC123'
+
+        //arrange
+  await page.goto('http://localhost:5173/');
+
+  //checkpoints
+  await expect(page.getByTestId('hero-section').getByRole('heading', { name: 'Velô Sprint' })).toBeVisible();
+  await expect(page.getByTestId('hero-section').getByRole('heading')).toContainText('Velô Sprint');
+
+
+  await page.getByRole('link', { name: 'Consultar Pedido' }).click();
+  //checkpoints texto consultar pedido
+  await expect(page.getByRole('heading')).toContainText('Consultar Pedido');
+
+  await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order);
+  await page.getByRole('button', { name: 'Buscar Pedido' }).click();
+
+
+  // const title = page.getByRole('heading',{name:'Pedido não encontrado', level:3}  )
+  // await expect(title).toBeVisible()
+
+  // const mesage = page.locator('p',{hasText:'Verifique o número do pedido e tente novamente'})
+  // await expect(mesage).toBeVisible()
+
+
+  await expect(page.locator('#root')).toMatchAriaSnapshot(`
+    - img
+    - heading "Pedido não encontrado" [level=3]
+    - paragraph: Verifique o número do pedido e tente novamente
+    `);
+
+
+
+
+
+
+
+
+})
