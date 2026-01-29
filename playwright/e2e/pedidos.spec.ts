@@ -23,10 +23,22 @@ test('Deve consultar um pedido aprovado', async ({ page }) => {
 
   //checkpoints resultado do pedido
 
-  await expect(page.getByText('Pedido', { exact: true })).toBeVisible();
+  // await expect(page.getByTestId('order-result-id')).toBeVisible({timeout:30_000});
+  // await expect(page.getByTestId('order-result-id')).toContainText('VLO-B7ICS9');
+
+  // const ordercode = page.locator('//p[text() ="Pedido"]/..//p[text()="VLO-B7ICS9"]')
+  // await expect(ordercode).toBeVisible({timeout:10_000});
+
+  const containerPedido = page.getByRole('paragraph')
+    .filter({ hasText: /^Pedido$/})
+    .locator('..') //sobe para elemento pai
+
+  await expect(containerPedido).toContainText('VLO-B7ICS9',{timeout:10_000})
 
   
   //checkpoints status do pedido
+  // await expect(page.getByTestId('order-result-status')).toBeVisible();
+  // await expect(page.getByTestId('order-result-status')).toContainText('APROVADO');
 
   await expect(page.getByText('APROVADO')).toBeVisible();
 

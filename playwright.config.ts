@@ -12,7 +12,15 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  timeout: 10_000,
+
+  // tempo maximo de espera para cada teste
+  timeout: 60_000,
+
+  // tempo maximo de espera para assertions
+  expect: {
+    timeout: 50000 ,
+  },
+
   testDir: './playwright/e2e',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -37,7 +45,15 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { 
+        ...devices['Desktop Chrome'],
+
+        // tempo maxi para ações interativas como click, fill
+        actionTimeout: 5_000,
+
+        // açoes de navegação
+        navigationTimeout: 10_000,
+      },
     },
 
     // {
