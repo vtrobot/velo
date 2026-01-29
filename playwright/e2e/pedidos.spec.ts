@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 
+import { gerarCodigoPedido } from '../support/Helpers'; 
+
 test('Deve consultar um pedido aprovado', async ({ page }) => {
 
   //Test Data
@@ -50,9 +52,9 @@ test('Deve consultar um pedido aprovado', async ({ page }) => {
 
 });
 
-test ('Deve validar quandonãoencontrar o pedido', async({page}) => {
+test ('Deve validar quando não encontrar o pedido', async({page}) => {
 
-    const order = 'VLO-ABC123'
+    const order = gerarCodigoPedido()
 
         //arrange
   await page.goto('http://localhost:5173/');
