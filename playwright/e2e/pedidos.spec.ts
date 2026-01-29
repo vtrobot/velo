@@ -1,6 +1,12 @@
 import { test, expect } from '@playwright/test';
 
 test('Deve consultar um pedido aprovado', async ({ page }) => {
+
+  //Test Data
+
+    const order ='VLO-B7ICS9'
+
+
     //arrange
   await page.goto('http://localhost:5173/');
 
@@ -14,7 +20,7 @@ test('Deve consultar um pedido aprovado', async ({ page }) => {
 
   //act
 
-  await page.getByRole('textbox', { name: 'Número do Pedido' }).fill('VLO-B7ICS9');
+  await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order);
 
   await page.getByRole('button', { name: 'Buscar Pedido' }).click();
 
@@ -33,7 +39,7 @@ test('Deve consultar um pedido aprovado', async ({ page }) => {
     .filter({ hasText: /^Pedido$/})
     .locator('..') //sobe para elemento pai
 
-  await expect(containerPedido).toContainText('VLO-B7ICS9',{timeout:10_000})
+  await expect(containerPedido).toContainText(order,{timeout:10_000})
 
   
   //checkpoints status do pedido
