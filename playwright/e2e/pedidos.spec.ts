@@ -23,10 +23,23 @@ test.describe ('Consulta pedidos', ()=>{
 
     //Test Data
   
-      const order ='VLO-B7ICS9'
+      // const order ='VLO-B7ICS9'
+
+    const order = {
+
+      number:'VLO-B7ICS9',
+      Status:'APROVADO',
+      color:' Glacier Blue',
+      wheels:'sport Wheels',
+      curtomer:{
+        name:'valmor teste',
+        email:' valmor@este.dev'
+      },
+      payment:'À Vista'
+    }
     //act
   
-    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order);
+    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order.number);
   
     await page.getByRole('button', { name: 'Buscar Pedido' }).click();
   
@@ -45,7 +58,7 @@ test.describe ('Consulta pedidos', ()=>{
       .filter({ hasText: /^Pedido$/})
       .locator('..') //sobe para elemento pai
   
-    await expect(containerPedido).toContainText(order,{timeout:10_000})
+    await expect(containerPedido).toContainText(order.number,{timeout:10_000})
   
     
     //checkpoints status do pedido
@@ -54,38 +67,91 @@ test.describe ('Consulta pedidos', ()=>{
   
     await expect(page.getByText('APROVADO')).toBeVisible();
 
-    await expect(page.getByTestId(`order-result-${order}`)).toMatchAriaSnapshot(`
+    await expect(page.getByTestId(`order-result-${order.number}`)).toMatchAriaSnapshot(`
       - img
       - paragraph: Pedido
-      - paragraph: ${order}
+      - paragraph: ${order.number}
       - img
-      - text: APROVADO
+      - text: ${order.Status}
       - img "Velô Sprint"
       - paragraph: Modelo
       - paragraph: Velô Sprint
       - paragraph: Cor
-      - paragraph: Glacier Blue
+      - paragraph:  ${order.color}
       - paragraph: Interior
       - paragraph: cream
       - paragraph: Rodas
-      - paragraph: sport Wheels
+      - paragraph: ${order.wheels}
       - heading "Dados do Cliente" [level=4]
       - paragraph: Nome
-      - paragraph: valmor teste
+      - paragraph: ${order.curtomer.name}
       - paragraph: Email
-      - paragraph: valmor@este.dev
+      - paragraph: ${order.curtomer.email}
       - paragraph: Loja de Retirada
       - paragraph
       - paragraph: Data do Pedido
       - paragraph: /\\d+\\/\\d+\\/\\d+/
       - heading "Pagamento" [level=4]
-      - paragraph: À Vista
+      - paragraph: ${order.payment}
       - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
       `);
   
   
   });
   
+  test ('Deve consultar pedido reprovado', async({page}) => { 
+
+    //Test Data
+  
+    const order = {
+
+      number:'VLO-XLADSJ',
+      Status:'REPROVADO',
+      color:' Midnight Black',
+      wheels:'sport Wheels',
+      curtomer:{
+        name:'Victor tambosi',
+        email:' victor@tambo.com'
+      },
+      payment:'À Vista'
+    }
+    //act
+  
+    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order.number);
+  
+    await page.getByRole('button', { name: 'Buscar Pedido' }).click();
+  
+    await expect(page.getByTestId(`order-result-${order.number}`)).toMatchAriaSnapshot(`
+      - img
+      - paragraph: Pedido
+      - paragraph: ${order.number}
+      - img
+      - text: ${order.Status}
+      - img "Velô Sprint"
+      - paragraph: Modelo
+      - paragraph: Velô Sprint
+      - paragraph: Cor
+      - paragraph:  ${order.color}
+      - paragraph: Interior
+      - paragraph: cream
+      - paragraph: Rodas
+      - paragraph: ${order.wheels}
+      - heading "Dados do Cliente" [level=4]
+      - paragraph: Nome
+      - paragraph: ${order.curtomer.name}
+      - paragraph: Email
+      - paragraph: ${order.curtomer.email}
+      - paragraph: Loja de Retirada
+      - paragraph
+      - paragraph: Data do Pedido
+      - paragraph: /\\d+\\/\\d+\\/\\d+/
+      - heading "Pagamento" [level=4]
+      - paragraph: ${order.payment}
+      - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
+      `);
+
+  }) 
+
 
   test ('Deve validar quando não encontrar o pedido', async({page}) => {
 
