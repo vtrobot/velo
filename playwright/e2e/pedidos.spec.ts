@@ -53,6 +53,36 @@ test.describe ('Consulta pedidos', ()=>{
     // await expect(page.getByTestId('order-result-status')).toContainText('APROVADO');
   
     await expect(page.getByText('APROVADO')).toBeVisible();
+
+    await expect(page.getByTestId(`order-result-${order}`)).toMatchAriaSnapshot(`
+      - img
+      - paragraph: Pedido
+      - paragraph: ${order}
+      - img
+      - text: APROVADO
+      - img "Velô Sprint"
+      - paragraph: Modelo
+      - paragraph: Velô Sprint
+      - paragraph: Cor
+      - paragraph: Glacier Blue
+      - paragraph: Interior
+      - paragraph: cream
+      - paragraph: Rodas
+      - paragraph: sport Wheels
+      - heading "Dados do Cliente" [level=4]
+      - paragraph: Nome
+      - paragraph: valmor teste
+      - paragraph: Email
+      - paragraph: valmor@este.dev
+      - paragraph: Loja de Retirada
+      - paragraph
+      - paragraph: Data do Pedido
+      - paragraph: /\\d+\\/\\d+\\/\\d+/
+      - heading "Pagamento" [level=4]
+      - paragraph: À Vista
+      - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
+      `);
+  
   
   });
   
