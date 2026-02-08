@@ -152,7 +152,58 @@ test.describe ('Consulta pedidos', ()=>{
 
   }) 
 
+  test ('Deve consultar pedido em Analise', async({page}) => { 
 
+    //Test Data
+  
+    const order = {
+
+      number:'VLO-MHV67X',
+      Status:'EM_ANALISE',
+      color:' Midnight Black',
+      wheels:'sport Wheels',
+      curtomer:{
+        name:'vivi teste',
+        email:'vivi@tamb.com'
+      },
+      payment:'À Vista'
+    }
+    //act
+  
+    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order.number);
+  
+    await page.getByRole('button', { name: 'Buscar Pedido' }).click();
+  
+    await expect(page.getByTestId(`order-result-${order.number}`)).toMatchAriaSnapshot(`
+      - img
+      - paragraph: Pedido
+      - paragraph: ${order.number}
+      - img
+      - text: ${order.Status}
+      - img "Velô Sprint"
+      - paragraph: Modelo
+      - paragraph: Velô Sprint
+      - paragraph: Cor
+      - paragraph:  ${order.color}
+      - paragraph: Interior
+      - paragraph: cream
+      - paragraph: Rodas
+      - paragraph: ${order.wheels}
+      - heading "Dados do Cliente" [level=4]
+      - paragraph: Nome
+      - paragraph: ${order.curtomer.name}
+      - paragraph: Email
+      - paragraph: ${order.curtomer.email}
+      - paragraph: Loja de Retirada
+      - paragraph
+      - paragraph: Data do Pedido
+      - paragraph: /\\d+\\/\\d+\\/\\d+/
+      - heading "Pagamento" [level=4]
+      - paragraph: ${order.payment}
+      - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
+      `);
+
+  }) 
   test ('Deve validar quando não encontrar o pedido', async({page}) => {
 
     const order = gerarCodigoPedido()
