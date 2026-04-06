@@ -1,0 +1,14 @@
+- Como criar uma nova Action:
+  - Crie `support/actions/<contexto>Actions.ts`
+  - Exporte `create<Contexto>Actions(page: Page)` retornando métodos async
+- Como registrar na fixture:
+  - Edite `support/fixtures.ts` e adicione a action em `App`
+  - Instancie-a em `app: async ({ page }, use) => { ... }`
+- Como usar no teste:
+  - `import { test, expect } from '../support/fixtures'`
+  - No teste, receba `{ app, page }`
+  - Chame `app.<contexto>.<ação>()`
+- Regras:
+  - Não altere seletores/asserções existentes
+  - Não use classes/herança
+
