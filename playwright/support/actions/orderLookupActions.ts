@@ -12,12 +12,12 @@ export function createOrderLookupActions(page: Page) {
 
             orderInput,
             searchButton,
-            
+
         },
 
-        async open(){
+        async open() {
 
-            await page.goto('http://localhost:5173/');
+            await page.goto('http://localhost:5173');
             const title = page.getByTestId('hero-section').getByRole('heading')
             await expect(title).toContainText('Velô Sprint');
 
