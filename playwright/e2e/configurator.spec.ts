@@ -18,4 +18,17 @@ test.describe('Configurador de Veículo', () => {
     await app.configurator.selectWheels('AERO');
     await app.configurator.assertExpectedPriceForWheels('AERO');
   });
+
+  test('CT03 - Adição Dinâmica de Suprimentos Premium e Submissão ao Checkout', async ({ app }) => {
+    await app.configurator.selectOptional('PRECISION_PARK');
+    await app.configurator.assertTotalPrice('R$ 45.500,00');
+
+    await app.configurator.selectOptional('FLUX_CAPACITOR');
+    await app.configurator.assertTotalPrice('R$ 50.500,00');
+
+    await app.configurator.goToCheckout();
+    await app.configurator.assertCheckoutSummaryHasOptional('PRECISION_PARK');
+    await app.configurator.assertCheckoutSummaryHasOptional('FLUX_CAPACITOR');
+    await app.configurator.assertCheckoutSummaryTotal('R$ 50.500,00');
+  });
 });

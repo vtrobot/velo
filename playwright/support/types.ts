@@ -15,5 +15,9 @@ export interface OrderDetails {
 }
 
 export type WheelType = 'AERO' | 'SPORT';
-export type ConfiguratorPrice = 'R$ 40.000,00' | 'R$ 42.000,00';
+export type ConfiguratorPrice =
+  | 'R$ 40.000,00'
+  | 'R$ 42.000,00'
+  | 'R$ 45.500,00'
+  | 'R$ 50.500,00';
 

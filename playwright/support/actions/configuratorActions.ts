@@ -16,9 +16,23 @@ const carImageByWheelType: Record<WheelType, string> = {
   SPORT: '/src/assets/glacier-blue-sport-wheels.png',
 };
 
+type OptionalFeature = 'PRECISION_PARK' | 'FLUX_CAPACITOR';
+
+const optionalCheckboxByType: Record<OptionalFeature, string> = {
+  PRECISION_PARK: 'opt-precision-park',
+  FLUX_CAPACITOR: 'opt-flux-capacitor',
+};
+
+const optionalLabelByType: Record<OptionalFeature, string> = {
+  PRECISION_PARK: 'Precision Park',
+  FLUX_CAPACITOR: 'Flux Capacitor',
+};
+
 export function createConfiguratorActions(page: Page) {
   const priceElement = page.getByTestId('total-price');
   const carImage = page.locator('img[alt^="Velô Sprint"]');
+  const checkoutButton = page.getByTestId('checkout-button');
+  const checkoutSummaryTotal = page.getByTestId('summary-total-price');
 
   return {
     elements: {
@@ -45,6 +59,23 @@ export function createConfiguratorActions(page: Page) {
 
     async assertCarImageForWheels(type: WheelType) {
       await expect(carImage).toHaveAttribute('src', carImageByWheelType[type]);
+    },
+
+    async selectOptional(type: OptionalFeature) {
+      await page.getByTestId(optionalCheckboxByType[type]).click();
+    },
+
+    async goToCheckout() {
+      await checkoutButton.click();
+      await expect(page).toHaveURL(/\/order$/);
+    },
+
+    async assertCheckoutSummaryTotal(value: string) {
+      await expect(checkoutSummaryTotal).toHaveText(value);
+    },
+
+    async assertCheckoutSummaryHasOptional(type: OptionalFeature) {
+      await expect(page.getByText(optionalLabelByType[type], { exact: true })).toBeVisible();
     },
   };
 }
