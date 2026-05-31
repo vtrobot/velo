@@ -58,7 +58,7 @@ const OrderLookup = () => {
     }
     
     if (order) {
-      setSearchedOrder(order);
+      setSearchedOrder(order);      
     } else {
       setNotFound(true);
     }
@@ -85,9 +85,9 @@ const OrderLookup = () => {
               <div>
                 <Label htmlFor="order-id">Número do Pedido</Label>
                 <Input
-                  id="order-id"
                   type="text"
-                  placeholder="Ex: VLO-ABC123"
+                  id="order-id"
+                  placeholder="Ex: VLO-ABCD10"
                   value={orderId}
                   onChange={(e) => setOrderId(e.target.value)}
                   className="mt-1"
@@ -138,7 +138,7 @@ const OrderLookup = () => {
                   <Package className="w-5 h-5 text-muted-foreground" />
                   <div>
                     <p className="text-sm text-muted-foreground">Pedido</p>
-                    <p className="font-mono font-medium" >
+                    <p className="font-mono font-medium">
                       {searchedOrder.id}
                     </p>
                   </div>
@@ -154,11 +154,11 @@ const OrderLookup = () => {
                   }`}
                 >
                   {searchedOrder.status === 'APROVADO' ? (
-                    <CheckCircle className="w-4 h-4 lucide-circle-check-big" />
+                    <CheckCircle className="w-4 h-4" />
                   ) : searchedOrder.status === 'REPROVADO' ? (
-                    <XCircle className="w-4 h-4 lucide-circle-x" />
+                    <XCircle className="w-4 h-4" />
                   ) : (
-                    <Clock className="w-4 h-4 lucide-clock-icon" />
+                    <Clock className="w-4 h-4" />
                   )}
                   {searchedOrder.status}
                 </div>

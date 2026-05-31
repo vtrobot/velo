@@ -1,34 +1,45 @@
-import { test } from '../support/fixtures';
+import { test } from '../support/fixtures'
 
-test.describe('Configurador de Veículo', () => {
+test.describe('Configuração do Veículo', () => {
   test.beforeEach(async ({ app }) => {
-    await app.configurator.open();
-  });
+    await app.configurator.open()
+  })
 
-  test('CT02.1 - Verificação do Preço do Modelo Base (Rodas Padrão)', async ({ app }) => {
-    await app.configurator.assertExpectedPriceForWheels('AERO');
-    await app.configurator.selectWheels('SPORT');
-    await app.configurator.assertCarImageForWheels('SPORT');
-    await app.configurator.assertExpectedPriceForWheels('SPORT');
-  });
+  test('deve atualizar a imagem e manter o preço base ao trocar a cor do veículo', async ({ app }) => {
+    await app.configurator.expectPrice('R$ 40.000,00')
 
-  test('CT02.2 - Validação do Recálculo na Troca de Rodas', async ({ app }) => {
-    await app.configurator.selectWheels('SPORT');
-    await app.configurator.assertExpectedPriceForWheels('SPORT');
-    await app.configurator.selectWheels('AERO');
-    await app.configurator.assertExpectedPriceForWheels('AERO');
-  });
+    await app.configurator.selectColor('Midnight Black')
+    await app.configurator.expectPrice('R$ 40.000,00')
+    await app.configurator.expectCarImageSrc('/src/assets/midnight-black-aero-wheels.png')
+  })
 
-  test('CT03 - Adição Dinâmica de Suprimentos Premium e Submissão ao Checkout', async ({ app }) => {
-    await app.configurator.selectOptional('PRECISION_PARK');
-    await app.configurator.assertTotalPrice('R$ 45.500,00');
+  test('deve atualizar o preço e a imagem ao alterar as rodas, e restaurar os valores padrão', async ({ app }) => {
+    await app.configurator.expectPrice('R$ 40.000,00')
 
-    await app.configurator.selectOptional('FLUX_CAPACITOR');
-    await app.configurator.assertTotalPrice('R$ 50.500,00');
+    await app.configurator.selectWheels(/Sport Wheels/)
+    await app.configurator.expectPrice('R$ 42.000,00')
+    await app.configurator.expectCarImageSrc('/src/assets/glacier-blue-sport-wheels.png')
 
-    await app.configurator.goToCheckout();
-    await app.configurator.assertCheckoutSummaryHasOptional('PRECISION_PARK');
-    await app.configurator.assertCheckoutSummaryHasOptional('FLUX_CAPACITOR');
-    await app.configurator.assertCheckoutSummaryTotal('R$ 50.500,00');
-  });
-});
+    await app.configurator.selectWheels(/Aero Wheels/)
+    await app.configurator.expectPrice('R$ 40.000,00')
+    await app.configurator.expectCarImageSrc('/src/assets/glacier-blue-aero-wheels.png')
+  })
+
+  test('deve atualizar o preço com opcionais e persistir no checkout', async ({ app }) => {
+    await app.configurator.expectPrice('R$ 40.000,00')
+
+    await app.configurator.checkOptional(/Precision Park/i)
+    await app.configurator.expectPrice('R$ 45.500,00')
+
+    await app.configurator.checkOptional(/Flux Capacitor/i)
+    await app.configurator.expectPrice('R$ 50.500,00')
+
+    await app.configurator.uncheckOptional(/Precision Park/i)
+    await app.configurator.uncheckOptional(/Flux Capacitor/i)
+    await app.configurator.expectPrice('R$ 40.000,00')
+
+    await app.configurator.finishConfigurator()
+    await app.checkout.expectLoaded()
+    await app.checkout.expectSummaryTotal('R$ 40.000,00')
+  })
+})

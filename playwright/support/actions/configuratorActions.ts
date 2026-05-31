@@ -1,81 +1,44 @@
-import { Page, expect } from '@playwright/test';
-import { ConfiguratorPrice, WheelType } from '../types';
-
-const wheelButtonByType: Record<WheelType, RegExp> = {
-  AERO: /Aero Wheels/i,
-  SPORT: /Sport Wheels/i,
-};
-
-const priceByWheelType: Record<WheelType, ConfiguratorPrice> = {
-  AERO: 'R$ 40.000,00',
-  SPORT: 'R$ 42.000,00',
-};
-
-const carImageByWheelType: Record<WheelType, string> = {
-  AERO: '/src/assets/glacier-blue-aero-wheels.png',
-  SPORT: '/src/assets/glacier-blue-sport-wheels.png',
-};
-
-type OptionalFeature = 'PRECISION_PARK' | 'FLUX_CAPACITOR';
-
-const optionalCheckboxByType: Record<OptionalFeature, string> = {
-  PRECISION_PARK: 'opt-precision-park',
-  FLUX_CAPACITOR: 'opt-flux-capacitor',
-};
-
-const optionalLabelByType: Record<OptionalFeature, string> = {
-  PRECISION_PARK: 'Precision Park',
-  FLUX_CAPACITOR: 'Flux Capacitor',
-};
+import { Page, expect } from '@playwright/test'
 
 export function createConfiguratorActions(page: Page) {
-  const priceElement = page.getByTestId('total-price');
-  const carImage = page.locator('img[alt^="Velô Sprint"]');
-  const checkoutButton = page.getByTestId('checkout-button');
-  const checkoutSummaryTotal = page.getByTestId('summary-total-price');
+  const optionalCheckbox = (name: string | RegExp) => page.getByRole('checkbox', { name })
 
   return {
-    elements: {
-      priceElement,
-      carImage,
-    },
-
     async open() {
-      await page.goto('http://localhost:5173/configure');
-      await expect(priceElement).toBeVisible();
+      await page.goto('/configure')
     },
 
-    async selectWheels(type: WheelType) {
-      await page.getByRole('button', { name: wheelButtonByType[type] }).click();
+    async selectColor(name: string) {
+      await page.getByRole('button', { name }).click()
     },
 
-    async assertTotalPrice(value: ConfiguratorPrice) {
-      await expect(priceElement).toHaveText(value);
+    async selectWheels(name: string | RegExp) {
+      await page.getByRole('button', { name }).click()
     },
 
-    async assertExpectedPriceForWheels(type: WheelType) {
-      await this.assertTotalPrice(priceByWheelType[type]);
+    async expectPrice(price: string) {
+      const priceElement = page.getByTestId('total-price')
+      await expect(priceElement).toBeVisible()
+      await expect(priceElement).toHaveText(price)
     },
 
-    async assertCarImageForWheels(type: WheelType) {
-      await expect(carImage).toHaveAttribute('src', carImageByWheelType[type]);
+    async expectCarImageSrc(src: string) {
+      const carImage = page.locator('img[alt^="Velô Sprint"]')
+      await expect(carImage).toHaveAttribute('src', src)
     },
 
-    async selectOptional(type: OptionalFeature) {
-      await page.getByTestId(optionalCheckboxByType[type]).click();
+    async checkOptional(name: string | RegExp) {
+      await expect(optionalCheckbox(name)).toBeVisible()
+      await optionalCheckbox(name).check()
     },
 
-    async goToCheckout() {
-      await checkoutButton.click();
-      await expect(page).toHaveURL(/\/order$/);
+    async uncheckOptional(name: string | RegExp) {
+      await expect(optionalCheckbox(name)).toBeVisible()
+      await optionalCheckbox(name).uncheck()
     },
 
-    async assertCheckoutSummaryTotal(value: string) {
-      await expect(checkoutSummaryTotal).toHaveText(value);
+    async finishConfigurator() {
+      await page.getByRole('button', { name: 'Monte o Seu' }).click()
     },
-
-    async assertCheckoutSummaryHasOptional(type: OptionalFeature) {
-      await expect(page.getByText(optionalLabelByType[type], { exact: true })).toBeVisible();
-    },
-  };
+  }
 }
