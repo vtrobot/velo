@@ -8,6 +8,11 @@ export function createConfiguratorActions(page: Page) {
       await page.goto('/configure')
     },
 
+    async openFromHome() {
+      await page.goto('/')
+      await page.getByRole('link', { name: /Configure Agora/i }).click()
+    },
+
     async selectColor(name: string) {
       await page.getByRole('button', { name }).click()
     },
