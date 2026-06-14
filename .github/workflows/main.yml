@@ -6,7 +6,7 @@ name: Continuous Integration
 on:
   push:
     branches:
-      - main
+      - master
 
 env:
   # Versão do Node utilizada em todo o workflow
