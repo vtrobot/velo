@@ -31,3 +31,4 @@ dist-ssr
 /playwright/.auth/
 
 .vercel
+playwright/support/fixtures/playwright-report.zip
