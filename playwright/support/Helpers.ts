@@ -1,3 +1,4 @@
+//teste
 export function generateOrderCode() {
     const prefix = 'VLO'
 
