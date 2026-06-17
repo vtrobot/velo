@@ -1,12 +1,12 @@
 # Workflow de Integração Contínua focado em execução de testes unitários
 # Estrutura preparada para expansão futura (novos jobs, stages, etc.)
 
-name: Continuous Deployment
+name: Continuous Deployment preview
 
 on:
   push:
     branches:
-      - master
+      - preview
 
 env:
   # Versão do Node utilizada em todo o workflow 24
