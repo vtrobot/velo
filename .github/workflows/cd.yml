@@ -86,10 +86,16 @@ jobs:
       - name: Deploy preview
         id: deploy
         run: |
-          URL=$(yarn --silent vercel deploy --prebuilt \
+          RAW_URL=$(yarn --silent vercel deploy --prebuilt \
           --target=preview \
           --token=$VERCEL_TOKEN \
           --scope=$VERCEL_SCOPE)
+          
+          # Como o Yarn ou a Vercel podem imprimir logs extras (mesmo com --silent), 
+          # filtramos para pegar estritamente o link que começa com https://
+          URL=$(echo "$RAW_URL" | grep -o 'https://[^ ]*' | head -n 1)
+          
+          echo "Link do preview gerado: $URL"
           echo "deployment-url=$URL" >> $GITHUB_OUTPUT
 
   e2e-tests:
