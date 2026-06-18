@@ -77,10 +77,16 @@ jobs:
           --environment=preview \
           --token=$VERCEL_TOKEN \
           --scope=$VERCEL_SCOPE
+
+      - name: Validate Supabase Preview Env
+        run: |
+          test -f .vercel/.env.preview.local
+          grep -q '^VITE_SUPABASE_URL=' .vercel/.env.preview.local
+          grep -q '^VITE_SUPABASE_PUBLISHABLE_KEY=' .vercel/.env.preview.local
       
       # 6. Build para o Vercel
       - name: Build Vercel
-        run: yarn vercel build --token=$VERCEL_TOKEN
+        run: yarn vercel build --target=preview --token=$VERCEL_TOKEN --scope=$VERCEL_SCOPE
 
       # 7. Deploy preview no vercel
       - name: Deploy preview
