@@ -77,33 +77,19 @@ jobs:
           --environment=preview \
           --token=$VERCEL_TOKEN \
           --scope=$VERCEL_SCOPE
-
-      - name: Validate Supabase Preview Env
-        run: |
-          test -f .vercel/.env.preview.local
-          grep -q '^VITE_SUPABASE_URL=.\+' .vercel/.env.preview.local
-          grep -q '^VITE_SUPABASE_PUBLISHABLE_KEY=.\+' .vercel/.env.preview.local
-          grep '^VITE_SUPABASE_' .vercel/.env.preview.local >> $GITHUB_ENV
-          echo "VITE_SUPABASE_URL loaded for preview build"
       
       # 6. Build para o Vercel
       - name: Build Vercel
-        run: yarn vercel build --target=preview --token=$VERCEL_TOKEN --scope=$VERCEL_SCOPE
+        run: yarn vercel build --token=$VERCEL_TOKEN
 
       # 7. Deploy preview no vercel
       - name: Deploy preview
         id: deploy
         run: |
-          RAW_URL=$(yarn --silent vercel deploy --prebuilt \
+          URL=$(yarn --silent vercel deploy --prebuilt \
           --target=preview \
           --token=$VERCEL_TOKEN \
           --scope=$VERCEL_SCOPE)
-          
-          # Como o Yarn ou a Vercel podem imprimir logs extras (mesmo com --silent), 
-          # filtramos para pegar estritamente o link que começa com https://
-          URL=$(echo "$RAW_URL" | grep -o 'https://[^ ]*' | head -n 1)
-          
-          echo "Link do preview gerado: $URL"
           echo "deployment-url=$URL" >> $GITHUB_OUTPUT
 
   e2e-tests:
