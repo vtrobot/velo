@@ -1,5 +1,7 @@
 # Workflow de Integração Contínua focado em execução de testes unitários
 # Estrutura preparada para expansão futura (novos jobs, stages, etc.)
+#Entrega do desafio final
+
 
 name: Continuous Deployment preview
 
